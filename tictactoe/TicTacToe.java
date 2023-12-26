@@ -13,7 +13,7 @@ public class TicTacToe implements ActionListener{
 	JPanel title_panel  = new JPanel();
 	JPanel button_panel  = new JPanel();
 	JLabel textfield = new JLabel();
-	//JButton newGame = new JButton();
+	JButton newGameButton = new JButton("new game");
 	JButton[] buttons = new JButton[9];
 	boolean xTurn;
 	private final int[][] winConditions = {
@@ -32,10 +32,21 @@ public class TicTacToe implements ActionListener{
 		
 		textfield.setBackground(new Color(30, 30, 30));
 		textfield.setForeground(new Color(25, 255, 0));
-		textfield.setFont(new Font("Helvetica",Font.BOLD,65));
+		textfield.setFont(new Font("Helvetica",Font.BOLD,55));
 		textfield.setHorizontalAlignment(JLabel.CENTER);
 		textfield.setText("tic-tac-toe");
 		textfield.setOpaque(true);
+		
+		newGameButton.addActionListener(new ActionListener() {
+		    @Override
+		    public void actionPerformed(ActionEvent e) {
+		        resetGame();
+		    }
+		});
+		newGameButton.setFont(new Font("Helvetica",Font.BOLD, 20));
+		newGameButton.setForeground(new Color(25, 255, 0));
+		newGameButton.setBackground(new Color(30, 30, 30));
+		newGameButton.setFocusable(false);		
 		
 		title_panel.setLayout(new BorderLayout());
 		title_panel.setBounds(0, 0, 600, 80);
@@ -49,10 +60,11 @@ public class TicTacToe implements ActionListener{
 			buttons[i].setFont(new Font("MV Boli",Font.BOLD,120));
 			buttons[i].setFocusable(false);
 			buttons[i].addActionListener(this);
+			buttons[i].setBackground(new Color(128, 128, 128));
 		}
 		
 		title_panel.add(textfield);
-		//title_panel.add(newGame);
+		title_panel.add(newGameButton, BorderLayout.EAST);
 		frame.add(title_panel, BorderLayout.NORTH);
 		frame.add(button_panel);
 		
@@ -123,31 +135,6 @@ public class TicTacToe implements ActionListener{
 			}
 		}
 		return false;
-		/*
-		if(xTurn) {
-			if( (buttons[0].getText() == "X" && buttons[1].getText() == "X" && buttons[2].getText() == "X") 
-					|| (buttons[3].getText() == "X" && buttons[4].getText() == "X" && buttons[5].getText() == "X")
-					|| (buttons[6].getText() == "X" && buttons[7].getText() == "X" && buttons[8].getText() == "X")
-					|| (buttons[0].getText() == "X" && buttons[3].getText() == "X" && buttons[6].getText() == "X")
-					|| (buttons[1].getText() == "X" && buttons[4].getText() == "X" && buttons[7].getText() == "X")
-					|| (buttons[2].getText() == "X" && buttons[5].getText() == "X" && buttons[8].getText() == "X")
-					|| (buttons[0].getText() == "X" && buttons[4].getText() == "X" && buttons[8].getText() == "X")
-					|| (buttons[6].getText() == "X" && buttons[4].getText() == "X" && buttons[2].getText() == "X")) {
-				xWon(1,2,3);
-			}
-		}else {
-			if( (buttons[0].getText() == "O" && buttons[1].getText() == "O" && buttons[2].getText() == "O") 
-					|| (buttons[3].getText() == "O" && buttons[4].getText() == "O" && buttons[5].getText() == "O")
-					|| (buttons[6].getText() == "O" && buttons[7].getText() == "O" && buttons[8].getText() == "O")
-					|| (buttons[0].getText() == "O" && buttons[3].getText() == "O" && buttons[6].getText() == "O")
-					|| (buttons[1].getText() == "O" && buttons[4].getText() == "O" && buttons[7].getText() == "O")
-					|| (buttons[2].getText() == "O" && buttons[5].getText() == "O" && buttons[8].getText() == "O")
-					|| (buttons[0].getText() == "O" && buttons[4].getText() == "O" && buttons[8].getText() == "O")
-					|| (buttons[6].getText() == "O" && buttons[4].getText() == "O" && buttons[2].getText() == "O")) {
-				oWon(1,2,3);
-			}
-		}
-	*/
 	}
 	
 	public void xWon(int[] con) {
@@ -155,6 +142,9 @@ public class TicTacToe implements ActionListener{
 		for(int a : con) {
 			buttons[a].setBackground(Color.GREEN);
 		}
+		for (JButton button : buttons) {
+			if(button.getText() == "") button.setEnabled(false);
+	    }
 	}
 	
 	public void oWon(int[] con) {
@@ -162,5 +152,17 @@ public class TicTacToe implements ActionListener{
 		for(int a : con) {
 			buttons[a].setBackground(Color.GREEN);
 		}
+		for (JButton button : buttons) {
+			if(button.getText() == "") button.setEnabled(false);
+	    }
+	}
+	
+	public void resetGame() {
+		for(JButton button : buttons) {
+			button.setText("");
+			button.setBackground(new Color(128, 128, 128));
+			button.setEnabled(true);
+		}
+		firstTurn();
 	}
 }

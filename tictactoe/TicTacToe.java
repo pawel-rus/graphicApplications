@@ -16,6 +16,11 @@ public class TicTacToe implements ActionListener{
 	//JButton newGame = new JButton();
 	JButton[] buttons = new JButton[9];
 	boolean xTurn;
+	private final int[][] winConditions = {
+			{0, 1, 2}, {3, 4, 5}, {6, 7, 8},
+			{0, 3, 6}, {1, 4, 7}, {2, 5, 8},
+			{0, 4, 8}, {6, 4, 2}
+	};
 	
 	TicTacToe(){
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -62,19 +67,24 @@ public class TicTacToe implements ActionListener{
 					if(buttons[i].getText() == "") {
 						buttons[i].setForeground(new Color(0,0,255));
 						buttons[i].setText("X");
-						check();
-						xTurn = false;
-						textfield.setText("O turn");
-						
+						if( check() ) {
+							//END GAME
+						}	
+						else {
+							xTurn = false;
+							textfield.setText("O turn");
+						}
 					}
 				} else {
 					if(buttons[i].getText() == "") {
 						buttons[i].setForeground(new Color(255,0,0));
 						buttons[i].setText("O");
-						check();
-						xTurn = true;
-						textfield.setText("X turn");
-						
+						if( check() ) {
+							// END GAME
+						}else {	
+							xTurn = true;
+							textfield.setText("X turn");
+						}
 					}
 				}
 			}
@@ -96,7 +106,24 @@ public class TicTacToe implements ActionListener{
 		}
 	}
 	
-	public void check() {
+	public boolean check() {
+		for(int[] con : winConditions) {
+			if( xTurn &&
+				buttons[con[0]].getText() == "X" &&
+				buttons[con[1]].getText() == "X" &&
+				buttons[con[2]].getText() == "X" ) {
+				xWon(con);
+				return true;
+				//break;
+			} else if( buttons[con[0]].getText() == "O" &&
+					buttons[con[1]].getText() == "O" &&
+					buttons[con[2]].getText() == "O" ){
+				oWon(con);
+				return true;
+			}
+		}
+		return false;
+		/*
 		if(xTurn) {
 			if( (buttons[0].getText() == "X" && buttons[1].getText() == "X" && buttons[2].getText() == "X") 
 					|| (buttons[3].getText() == "X" && buttons[4].getText() == "X" && buttons[5].getText() == "X")
@@ -106,7 +133,6 @@ public class TicTacToe implements ActionListener{
 					|| (buttons[2].getText() == "X" && buttons[5].getText() == "X" && buttons[8].getText() == "X")
 					|| (buttons[0].getText() == "X" && buttons[4].getText() == "X" && buttons[8].getText() == "X")
 					|| (buttons[6].getText() == "X" && buttons[4].getText() == "X" && buttons[2].getText() == "X")) {
-				textfield.setText("X won the game!");
 				xWon(1,2,3);
 			}
 		}else {
@@ -118,17 +144,23 @@ public class TicTacToe implements ActionListener{
 					|| (buttons[2].getText() == "O" && buttons[5].getText() == "O" && buttons[8].getText() == "O")
 					|| (buttons[0].getText() == "O" && buttons[4].getText() == "O" && buttons[8].getText() == "O")
 					|| (buttons[6].getText() == "O" && buttons[4].getText() == "O" && buttons[2].getText() == "O")) {
-				textfield.setText("O won the game!");
 				oWon(1,2,3);
 			}
 		}
+	*/
 	}
 	
-	public void xWon(int a, int b, int c) {
-		
+	public void xWon(int[] con) {
+		textfield.setText("X won the game!");
+		for(int a : con) {
+			buttons[a].setBackground(Color.GREEN);
+		}
 	}
 	
-	public void oWon(int a, int b, int c) {
-		
+	public void oWon(int[] con) {
+		textfield.setText("O won the game!");
+		for(int a : con) {
+			buttons[a].setBackground(Color.GREEN);
+		}
 	}
 }

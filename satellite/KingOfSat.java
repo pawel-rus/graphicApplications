@@ -19,6 +19,7 @@ public class KingOfSat {
 	//data from the main page
 	public String satelliteName;
 	public String orbitalPosition;
+	public String norad;
 	public String channels;
 	public String longitude;
 	public String maxDeclination;
@@ -71,12 +72,13 @@ public class KingOfSat {
 	            // Extract data from the main page 
 	            satelliteName = cells.get(1).select("a").text();
 	            orbitalPosition = cells.get(0).text();
+	            norad = cells.get(2).text();
 	            channels = cells.get(5).text();
 	            longitude = cells.get(7).text();
 	            maxDeclination = cells.get(9).text();
 	            
 	            if(!satelliteName.contains("Moving")) {
-		            satellitesList.add(new String[]{satelliteName, orbitalPosition, channels, longitude, maxDeclination});
+		            satellitesList.add(new String[]{satelliteName, orbitalPosition, norad, channels, longitude, maxDeclination});
 		            // Extract link for subpage
 		            String subpageUrl ="https://en.kingofsat.net/"+ cells.get(1).select("a").attr("href");
 		            // Call method to scrape specific data from subpages

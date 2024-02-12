@@ -26,7 +26,10 @@ public class CheckersFrame extends JFrame implements ActionListener{
 	JPanel boardPanel = new JPanel();
 	String blackPiece = "resources/black.png";
 	String whitePiece = "resources/white.png";
+	String blackQueen = "resources/blackQueen.png";
+	String whiteQueen = "resources/whiteQueen.png";
 	String turn = whitePiece;
+	boolean queenMove = false;
 	private int selectedRow = -1;
     private int selectedCol = -1;
     private int destinationRow;
@@ -103,10 +106,15 @@ public class CheckersFrame extends JFrame implements ActionListener{
 	                }else {
 	                	destinationRow = i;
 	                	destinationCol = j;
-	                	handleMove(selectedRow, selectedCol, destinationRow, destinationCol);
+	                	if(queenMove) {
+	                		handleQueenMove(selectedRow, selectedCol, destinationRow, destinationCol);
+	                		queenMove = false;
+	                	}else {
+	                		handleMove(selectedRow, selectedCol, destinationRow, destinationCol);
+	                	}
 	                	selectedRow = -1;
                         selectedCol = -1;
-                        //updateTurn(); /////**********
+                        //updateTurn(); 
 	                }
 	                return; 
 	            }
@@ -127,6 +135,9 @@ public class CheckersFrame extends JFrame implements ActionListener{
 	                	System.out.println("Moving piece from (" + startRow + ", " + startCol + ") to (" + destRow + ", " + destCol + ").");
 	    	            setCheckerPiece(destRow, destCol, turn);
 	    	            board[startRow][startCol].setIcon(null);
+	    	            if ((turn.equals(whitePiece) && destRow == 0) || (turn.equals(blackPiece) && destRow == 7)) {
+	                        changeToQueen(destRow, destCol);
+	                    }
 	    	            updateTurn();
 	                } else if(rowDifference == 2 && colDifference == 2){
 	                	int middleRow = (startRow + destRow) / 2;
@@ -137,6 +148,9 @@ public class CheckersFrame extends JFrame implements ActionListener{
 	                        setCheckerPiece(destRow, destCol, turn);
 	                        board[startRow][startCol].setIcon(null);
 	                        board[middleRow][middleCol].setIcon(null);
+	                        if ((turn.equals(whitePiece) && destRow == 0) || (turn.equals(blackPiece) && destRow == 7)) {
+	                            changeToQueen(destRow, destCol);
+	                        }
 	                        updateTurn();
 	                    }else {
 	                        System.out.println("Invalid move. Jump only over opponent's piece.");
@@ -154,12 +168,61 @@ public class CheckersFrame extends JFrame implements ActionListener{
 				
 	    }
 	}
-	private boolean isValidPiece(int row, int col) {
-	    ImageIcon selectedIcon = (ImageIcon) board[row][col].getIcon();
-	    return (selectedIcon != null && selectedIcon.getDescription().equals(turn));
+	
+	public void handleQueenMove(int startRow, int startCol, int destRow, int destCol) {
+		System.out.println("Queen move!");
+	    ImageIcon startIcon = (ImageIcon) board[startRow][startCol].getIcon();
+	    String queen = startIcon.getDescription();
+		int rowDifference = Math.abs(destRow - startRow);
+	    int colDifference = Math.abs(destCol - startCol);
+	    if (board[destRow][destCol].getIcon() == null) {
+	    	if(rowDifference == 1 && colDifference == 1) {
+		    	System.out.println("Moving queen from (" + selectedRow + ", " + selectedCol + ") to (" + destinationRow + ", " + destinationCol + ").");
+		        setCheckerPiece(destinationRow, destinationCol, queen);
+		        board[selectedRow][selectedCol].setIcon(null);
+		        updateTurn();
+	    	}else if(rowDifference == 2 && colDifference == 2) {
+		    	int middleRow = (startRow + destRow) / 2;
+	            int middleCol = (startCol + destCol) / 2;
+	            ImageIcon middleIcon = (ImageIcon) board[middleRow][middleCol].getIcon();
+	            if (middleIcon != null && !middleIcon.getDescription().equals(queen) && !middleIcon.getDescription().equals(turn)) {
+	            	System.out.println("Jumping queen from (" + startRow + ", " + startCol + ") over (" + middleRow + ", " + middleCol + ") to (" + destRow + ", " + destCol + ").");
+	            	setCheckerPiece(destRow, destCol, queen);
+	            	board[startRow][startCol].setIcon(null);
+	                board[middleRow][middleCol].setIcon(null);
+	                updateTurn();
+	            }else {
+            	System.out.println("Invalid move. Jump only over opponent's piece.");
+	            }
+	    	} else {
+	    		System.out.println("Invalid queen move. Move only one square diagonally or jump over opponent's piece.");
+	    	}
+	    }else {
+	    	System.out.println("Invalid move. Destination square is not empty.");
+	    }
+	    
+	    	
 	}
 	
-	private void updateTurn() {
+	public boolean isValidPiece(int row, int col) {
+	    ImageIcon selectedIcon = (ImageIcon) board[row][col].getIcon();
+	    if(selectedIcon != null) {
+	    	String iconDescription = selectedIcon.getDescription();
+	    	if(iconDescription.equals(whiteQueen) && turn.equals(whitePiece)) {
+	    		queenMove = true;
+	    		return true;
+	    	}else if(iconDescription.equals(blackQueen) && turn.equals(blackPiece)) {
+	    		queenMove = true;
+	    		return true;
+	    	} else {
+	    		return selectedIcon.getDescription().equals(turn);
+	    	}
+	    } else {
+	    	return false;
+	    }
+	}
+	
+	public void updateTurn() {
 	    if (turn.equals(whitePiece)) {
 	        turn = blackPiece;
 	        turnField.setText("BLACK's turn");
@@ -168,4 +231,17 @@ public class CheckersFrame extends JFrame implements ActionListener{
 	        turnField.setText("WHITE's turn");
 	    }
 	}
+	
+	public void changeToQueen(int row, int col) {
+		if (turn.equals(whitePiece)) {
+			setCheckerPiece(row, col, whiteQueen);
+		} else {
+			setCheckerPiece(row, col, blackQueen);
+		}
+	}
+	
+
 }
+
+//dodac krolowa, ktora moze w dowolnym kierunku sie ruszac 
+

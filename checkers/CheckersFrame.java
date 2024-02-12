@@ -106,13 +106,7 @@ public class CheckersFrame extends JFrame implements ActionListener{
 	                	handleMove(selectedRow, selectedCol, destinationRow, destinationCol);
 	                	selectedRow = -1;
                         selectedCol = -1;
-                        if(turn.equals(whitePiece)) {
-                        	turn = blackPiece;
-                        	turnField.setText("BLACK's turn");
-                        }else {
-                        	turn = whitePiece;
-                        	turnField.setText("WHITE's turn");
-                        }
+                        //updateTurn(); /////**********
 	                }
 	                return; 
 	            }
@@ -123,22 +117,55 @@ public class CheckersFrame extends JFrame implements ActionListener{
 	public void handleMove(int startRow, int startCol, int destRow, int destCol) {
 	    ImageIcon startIcon = (ImageIcon) board[startRow][startCol].getIcon();
 	    if (startIcon != null) {
-	        if (startIcon.getDescription().equals(whitePiece)) {
-	            System.out.println("Moving WHITE piece from (" + startRow + ", " + startCol + ") to (" + destRow + ", " + destCol + ").");
-	            setCheckerPiece(destRow, destCol, whitePiece);
-	        } else if (startIcon.getDescription().equals(blackPiece)) {
-	            System.out.println("Moving BLACK piece from (" + startRow + ", " + startCol + ") to (" + destRow + ", " + destCol + ").");
-	            setCheckerPiece(destRow, destCol, blackPiece);
-	        }
-	        board[startRow][startCol].setIcon(null);
-	    }
+	    	if (board[destRow][destCol].getIcon() == null) {
+	    		int rowDifference = Math.abs(destRow - startRow);
+	            int colDifference = Math.abs(destCol - startCol);
+	            
+	            if ((turn.equals(whitePiece) && destRow < startRow) || (turn.equals(blackPiece) && destRow > startRow)) {
+	                // Ruch do przodu dla białego lub czarnego pionka
+	                if (rowDifference == 1 && colDifference == 1) {
+	                	System.out.println("Moving piece from (" + startRow + ", " + startCol + ") to (" + destRow + ", " + destCol + ").");
+	    	            setCheckerPiece(destRow, destCol, turn);
+	    	            board[startRow][startCol].setIcon(null);
+	    	            updateTurn();
+	                } else if(rowDifference == 2 && colDifference == 2){
+	                	int middleRow = (startRow + destRow) / 2;
+	                    int middleCol = (startCol + destCol) / 2;
+	                    ImageIcon middleIcon = (ImageIcon) board[middleRow][middleCol].getIcon();
+	                    if (middleIcon != null && !middleIcon.getDescription().equals(turn)) {
+	                    	System.out.println("Jumping piece from (" + startRow + ", " + startCol + ") over (" + middleRow + ", " + middleCol + ") to (" + destRow + ", " + destCol + ").");
+	                        setCheckerPiece(destRow, destCol, turn);
+	                        board[startRow][startCol].setIcon(null);
+	                        board[middleRow][middleCol].setIcon(null);
+	                        updateTurn();
+	                    }else {
+	                        System.out.println("Invalid move. Jump only over opponent's piece.");
+	                    }
+	                } else {
+	                    System.out.println("Invalid move. Move only one square diagonally forward or jump over opponent's piece.");
+	                }
+	            } else {
+	                System.out.println("Invalid move. Move only in the forward direction.");
+	            }
+
+		    } else {
+	            System.out.println("Invalid move. Destination square is not empty.");
+		    }
 				
+	    }
 	}
-	
 	private boolean isValidPiece(int row, int col) {
 	    ImageIcon selectedIcon = (ImageIcon) board[row][col].getIcon();
-	    //String currentPlayerPiece = (turn.equals("WHITE")) ? whitePiece : blackPiece;
-
 	    return (selectedIcon != null && selectedIcon.getDescription().equals(turn));
+	}
+	
+	private void updateTurn() {
+	    if (turn.equals(whitePiece)) {
+	        turn = blackPiece;
+	        turnField.setText("BLACK's turn");
+	    } else {
+	        turn = whitePiece;
+	        turnField.setText("WHITE's turn");
+	    }
 	}
 }

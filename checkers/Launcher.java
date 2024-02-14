@@ -5,6 +5,8 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.FlowLayout;
 
 import javax.swing.Box;
@@ -16,7 +18,7 @@ import javax.swing.JPanel;
 import javax.swing.ImageIcon;
 
 
-public class Launcher {
+public class Launcher implements ActionListener {
     private JFrame frame = new JFrame("Checkers");
     private JPanel mainPanel = new JPanel();
     private JPanel infoPanel = new JPanel();
@@ -100,6 +102,7 @@ public class Launcher {
             buttonPanel.setBackground(myColor);
             games[i] = new JButton("Choose");
             games[i].setBackground(new Color(139, 69, 19));
+            games[i].addActionListener(this);
             buttonPanel.add(games[i]);
             
             /*
@@ -129,8 +132,30 @@ public class Launcher {
     	bottomPanel.setBackground(myColor);
     }
     
+    @Override
+	public void actionPerformed(ActionEvent e) {
+    	for (int i = 0; i < NO_OF_MODES; i++) {
+            if (e.getSource() == games[i]) {
+                switch (i) {
+                    case 0:
+                        System.out.println("American Checkers selected");
+                        new CheckersFrame();
+                        break;
+                    case 1:
+                        System.out.println("Brazilian Draughts selected");
+                        break;
+                    case 2:
+                        System.out.println("International Draughts selected");
+                        break;
+                }
+            }
+        }
+		
+	}
     
     public static void main(String[] args) {
         new Launcher();
     }
+
+	
 }

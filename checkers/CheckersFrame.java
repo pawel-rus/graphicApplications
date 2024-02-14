@@ -42,7 +42,7 @@ public class CheckersFrame extends JFrame implements ActionListener{
 		this.add(turnPanel, BorderLayout.NORTH);
 		this.add(boardPanel,BorderLayout.SOUTH);
 		this.setTitle("Checkers");
-		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		this.setResizable(false);
 		this.pack();
 		this.setVisible(true);
@@ -158,6 +158,8 @@ public class CheckersFrame extends JFrame implements ActionListener{
 	                    }else {
 	                        System.out.println("Invalid move. Jump only over opponent's piece.");
 	                    }
+	                }else if((rowDifference == 4 && colDifference == 4) || ((rowDifference == 4 && colDifference == 0))) {
+	                	doubleCapture(startRow, startCol, destRow, destCol, colDifference);
 	                } else {
 	                    System.out.println("Invalid move. Move only one square diagonally forward or jump over opponent's piece.");
 	                }
@@ -242,6 +244,39 @@ public class CheckersFrame extends JFrame implements ActionListener{
 			setCheckerPiece(row, col, blackQueen);
 		}
 	}
+	
+	public void doubleCapture(int startRow, int startCol, int destRow, int destCol, int colDifference){
+		if(colDifference == 4 ) {
+			int middleRow = (startRow + destRow) / 2;
+            int middleCol = (startCol + destCol) / 2;
+            ImageIcon middleIcon = (ImageIcon) board[middleRow][middleCol].getIcon();
+            if(middleIcon == null) {
+            	int firstPieceRow = (startRow + middleRow) / 2;
+            	int firstPieceCol = (startCol + middleCol) / 2;
+            	ImageIcon firstIcon = (ImageIcon) board[firstPieceRow][firstPieceCol].getIcon();
+            	int secondPieceRow = (middleRow + destRow) / 2;
+            	int secondPieceCol = (middleCol + destCol) / 2;
+            	ImageIcon secondIcon = (ImageIcon) board[secondPieceRow][secondPieceCol].getIcon();
+                if (firstIcon != null && secondIcon != null && !firstIcon.getDescription().equals(turn) && !secondIcon.getDescription().equals(turn)) {
+                	System.out.println("Jumping piece from (" + startRow + ", " + startCol + ") over (" + firstPieceRow + ", " + firstPieceCol + ") and (" +secondPieceRow + ", " + secondPieceCol + ") to (" + destRow + ", " + destCol + ").");
+                    setCheckerPiece(destRow, destCol, turn);
+                    board[startRow][startCol].setIcon(null);
+                    board[firstPieceRow][firstPieceCol].setIcon(null);
+                    board[secondPieceRow][secondPieceCol].setIcon(null);
+                    if ((turn.equals(whitePiece) && destRow == 0) || (turn.equals(blackPiece) && destRow == 7)) {
+                        changeToQueen(destRow, destCol);
+                    }
+                    updateTurn();
+                }else {
+                    System.out.println("DOUBLE JUMP Invalid move. Jump only over opponent's piece.");
+                }
+            }
+		}else {
+			
+		}
+	}
+	
+	
 	
 	public void showValidMoves(){
 		for (int i = 0; i < 8; i++) {

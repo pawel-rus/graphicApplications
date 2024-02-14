@@ -34,6 +34,8 @@ public class CheckersFrame extends JFrame implements ActionListener{
     private int selectedCol = -1;
     private int destinationRow;
     private int destinationCol;
+    private int blackPiecesTaken;
+    private int whitePiecesTaken;
 	CheckersFrame(){
 		initBoard();
 		this.setLayout(new BorderLayout());
@@ -45,6 +47,7 @@ public class CheckersFrame extends JFrame implements ActionListener{
 		this.pack();
 		this.setVisible(true);
 		this.setLocationRelativeTo(null);
+		//showValidMoves();
 	}
 	
 	public void initBoard(){
@@ -240,8 +243,39 @@ public class CheckersFrame extends JFrame implements ActionListener{
 		}
 	}
 	
-
+	public void showValidMoves(){
+		for (int i = 0; i < 8; i++) {
+		    for (int j = 0; j < 8; j++) {
+		        if ((i + j) % 2 == 0) {
+		            ImageIcon selectedIcon = (ImageIcon) board[i][j].getIcon(); 
+		            if(selectedIcon != null) {
+		            	String iconDescription = selectedIcon.getDescription();
+		            	if(iconDescription.equals(turn)) {
+		            		highlightValidMovesForPiece(i, j, iconDescription);
+		            	}
+		            }
+		        }
+		    }
+		}
+	}
+	
+	private void highlightValidMovesForPiece(int row, int col, String iconDescription) {
+		if(iconDescription.equals(whitePiece)) {
+			if ((col>0 && board[row+1][col-1].getIcon() == null)) {
+	            board[row][col].setBackground(Color.green);
+	        } else if ((col<7 && board[row+1][col-1].getIcon() == null)) {
+	        	board[row][col].setBackground(Color.green);
+	        }
+		}
+	}
+	
+	public void resetColors() {
+		for (int i = 0; i < 8; i++) {
+		    for (int j = 0; j < 8; j++) {
+		        if ((i + j) % 2 == 0) {
+		            board[i][j].setBackground(new Color(240, 220, 130));
+		        }
+		    }
+		}
+	}
 }
-
-//dodac krolowa, ktora moze w dowolnym kierunku sie ruszac 
-

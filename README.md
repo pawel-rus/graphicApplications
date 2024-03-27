@@ -1,5 +1,6 @@
 # graphicApplications
 - [TicTacToe](#tictactoe)
+- [Checkers](#checkers)
 
 # TicTacToe
 
@@ -32,4 +33,26 @@ This is a simple implementation of the classic Tic-Tac-Toe game in Java, using S
 - The program randomly selects the starting player at the beginning of each game.
 - A delay is introduced at the start of the game to simulate an initial pause.
 
+# Checkers
+
+This is a simple implementation of a checkers game in Java using Swing for the graphical interface.
+
+## Features
+
+- Three modes will be available: American Checkers, Brazilian Draughts, and International Draughts.
+- Different rule sets for each mode.
+- GUI interface with clickable buttons for user interaction.
+- Ability to select game mode and start playing.
+
+## Usage
+
+Upon running the game, you will be presented with a GUI window where you can choose the mode you want to play. After selecting a mode, the respective game board will be displayed, and you can start playing.
+
+### Launcher Class
+
+The `Launcher` class is responsible for initializing the main panel and handling the game's launching logic.
+
+### CheckersFrame Class
+
+The `CheckersFrame` class represents the game board and handles player moves, turns, and game logic.
 
